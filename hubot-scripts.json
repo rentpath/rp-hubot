@@ -30,6 +30,7 @@
   "gosling.coffee",
   "hashing.coffee",
   "haters.coffee",
+  "moarcatsme.coffee",
   "redis-brain.coffee",
   "shipit.coffee"
  ]
