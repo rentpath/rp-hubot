@@ -1,5 +1,0 @@
-language: node_js
-deploy:
-  provider: heroku
-  api_key:
-    secure: F0hTwBH++8yFb3a+9YPT3GXcyttgadIIWIfqtWAEilU/v3rqXj50A2sXRXCx1fEW8tQ/RLDUzFXWJLowXzQgkzC0WPLZX3Y4I/UIx4VbTE8V7Mu9HraFk7Czmt3JRfkeAASZNMJXZNsB48xZ19b9Lay+37qtq/hh+tAgtCwS8ko=
