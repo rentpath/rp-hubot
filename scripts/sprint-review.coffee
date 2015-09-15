@@ -245,7 +245,7 @@ module.exports = (robot) ->
           
           accepted_percentage = Math.round((accepted_points * 100) / total_points)
           
-          getProjectDetails project_id, token, res, (data) ->
+          getProjectDetails project_id, res, (data) ->
             res.send "/quote Here is the #{data.name} information for #{res.envelope.user.name}\n\n" +
             stories_message + 
             "Summary:\n" +
@@ -286,7 +286,7 @@ module.exports = (robot) ->
               count += 1
               stories_message += "[#{story.id}] [#{story.estimate}] #{story.name} \n #{story.url} \n\n"
           
-          getProjectDetails project_id, token, res, (data) ->
+          getProjectDetails project_id, res, (data) ->
             res.send "There are #{count} stories awaiting QA acceptance in #{data.name}.\n\n" +
             stories_message
               
@@ -318,7 +318,7 @@ module.exports = (robot) ->
               count += 1
               stories_message += "[#{story.id}] [#{story.estimate}] #{story.name} \n #{story.url} \n\n"
           
-          getProjectDetails project_id, token, res, (data) ->
+          getProjectDetails project_id, res, (data) ->
             res.send "There are #{count} stories awaiting Product acceptance in #{data.name}.\n\n" +
             stories_message
               
@@ -364,7 +364,7 @@ module.exports = (robot) ->
             count += 1
             stories_message += "[#{story.id}] #{story.name} \n #{story.url} \n\n"
   
-        getProjectDetails project_id, token, res, (data) ->
+        getProjectDetails project_id, res, (data) ->
           res.send "There are #{count} stories ready for estimation in #{data.name}.\n\n" +
           stories_message
         
@@ -384,40 +384,41 @@ module.exports = (robot) ->
       catch error
         res.send "Ran into an error parsing JSON for /projects/<project-id> request :( - #{error}"
         return
-  
-  getMe = (token, res, callback) ->
-    request = robot.http("https://www.pivotaltracker.com/services/v5/me")
-    request.header('Accept', 'application/json')
-    request.header('X-TrackerToken', token)
-    request.get() (err, response, body) ->
-      try
-        data = JSON.parse(body)
-        if data
-          callback data
-      catch error
-        res.send "Ran into an error parsing JSON for /me request :( - #{error}"
-        return
-        
         
   # Github Requests
   
-  getGituhbIssues = (username, project, res) ->
-    request = robot.http("https://api.github.com/repos/rentpath/#{project}/issues?access_token=59f0041f390f38b1daec128dbd8f79155ae6c769&assignee=#{username}")
+  getGituhbIssues = (project, res, username = "") ->
+    url_string = "https://api.github.com/repos/rentpath/#{project}/issues?access_token=59f0041f390f38b1daec128dbd8f79155ae6c769"
+    url_string += "&assignee=#{username}" if !!username
+    request = robot.http(url_string)
     request.get() (err, response, body) ->
       try
         data = JSON.parse(body)
         if data and data.length > 0
-          parseIssuesAndNotifyRoom data, username, project, res
+          parseIssuesAndNotifyRoom data, project, res, username
       catch error
-        res.send "Ran into an error parsing JSON for asignee request :( - #{error}"
+        res.send "Ran into an error parsing JSON for github request :( - #{error}"
         return
 
-  parseIssuesAndNotifyRoom = (issues, username, project, res) ->
-    message = "Issues / Pull Requests assigned to user #{username} for #{project}:\n\n"
-    for issue in issues
-      title = issue.title
-      url = issue.html_url
-      message += "#{title} \n #{url} \n\n"
+  parseIssuesAndNotifyRoom = (issues, project, res, username = "") ->
+    message = ""
+    
+    try
+      if !!username
+        message = "Issues / Pull Requests assigned to #{username} for #{project}:\n\n"
+      else
+        message = "Issues / Pull Requests for #{project}:\n\n"
+      
+      for issue in issues
+        date = new Date(issue.created_at)
+        title = issue.title
+        url = issue.html_url
+        created_by = issue.user.login
+        assigned_to = if issue.assignee and issue.assignee.login then issue.assignee.login else "Unassigned"
+        message += "#{title} \n #{url} \n Created By: #{created_by} \n Assigned To: #{assigned_to} \n Created On: #{date} \n\n"
+    catch error
+      res.send "Ran into an error parsing JSON for github response :( - #{error}"
+      return
 
     res.send message
     
@@ -535,6 +536,11 @@ module.exports = (robot) ->
     data = getIterationData "1257036", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
       
+  robot.respond /(.*) issues/i, (res) ->
+    res.send "Let me gather that info for you..."
+    project = res.match[1]
+    getGituhbIssues project, res
+    
 
   robot.respond /my work$/i, (res) ->
     res.send "Let me gather that info for you..."
@@ -556,10 +562,10 @@ module.exports = (robot) ->
       getStoryDetails "1054864", data[0].stories, res
       
     username = getGithubUsername res.envelope.user.name
-    getGituhbIssues username, "ios_apartmentguide", res
-    getGituhbIssues username, "Bishop", res
-    getGituhbIssues username, "ios_maxleases", res
-    getGituhbIssues username, "android_maxleases", res
+    getGituhbIssues "ios_apartmentguide", res, username
+    getGituhbIssues "Bishop", res, username
+    getGituhbIssues "ios_maxleases", res, username
+    getGituhbIssues "android_maxleases", res, username
       
   robot.respond /ready for (.*)$/i, (res) ->
     res.send "Let me gather that info for you..."
