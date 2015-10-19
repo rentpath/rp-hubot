@@ -445,71 +445,66 @@ module.exports = (robot) ->
  
   # mobile ---------
 
-  robot.respond /mobile pod d status$/i, (res) ->
+  robot.respond /minions status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1158374", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
 
-  robot.respond /mobile pod c status$/i, (res) ->
+  robot.respond /fantastic 4 status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054874", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
     
-  robot.respond /mobile pod b status$/i, (res) ->
+  robot.respond /black dynamite status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054870", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
 
-  robot.respond /mobile pod a status$/i, (res) ->
+  robot.respond /aqua teen hunger force status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054864", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
        
   # web ---------     
-  
-  robot.respond /web pod e status$/i, (res) ->
-    res.send "Let me gather that info for you..."
-    data = getIterationData "1055202", "current", res, (data) ->
-      parseIterationDataAndPostMessage data, res
       
-  robot.respond /web pod d status$/i, (res) ->
+  robot.respond /dread pirate roberts status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054880", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
 
-  robot.respond /web pod c status$/i, (res) ->
+  robot.respond /#yolo status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054862", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
     
-  robot.respond /web pod b status$/i, (res) ->
+  robot.respond /transformers status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054860", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
 
-  robot.respond /web pod a status$/i, (res) ->
+  robot.respond /ocean\'s eleven status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1054856", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
       
   # IWS ---------
   
-  robot.respond /iws pod f status$/i, (res) ->
+  robot.respond /thundercats status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1081884", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
 
-  robot.respond /iws pod c status$/i, (res) ->
+  robot.respond /infinite monkeys status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1064082", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
     
-  robot.respond /iws pod b status$/i, (res) ->
+  robot.respond /evil geniuses status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1064080", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
       
-  robot.respond /iws pod a status$/i, (res) ->
+  robot.respond /avengers status$/i, (res) ->
     res.send "Let me gather that info for you..."
     data = getIterationData "1064078", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res
@@ -620,7 +615,12 @@ module.exports = (robot) ->
         #pod a
         getUnestimatedStories "1054864", res
       
-
+  robot.hear /not working/i, (res) ->
+    res.send "Have you tried turning it off and back on again?"
+    
+  robot.hear /isn\'t working/i, (res) ->
+    res.send "Have you tried turning it off and back on again?"
+    
 
   # robot.hear /badger/i, (res) ->
   #   res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"

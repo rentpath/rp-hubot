@@ -10,7 +10,7 @@
 
 module.exports = (robot) ->
 
-  app_annie_key = '035680afe11ed3f7d030d3c1b18f138478dc6612'
+  app_annie_key = process.env.HUBOT_APPANNIE_TOKEN
   
   getAnalyticsData = (account_id, product_id, start_date, end_date, res, callback) ->
     url = "https://api.appannie.com/v1.2/accounts/#{account_id}/products/#{product_id}/sales?break_down=date&start_date=#{start_date}&end_date=#{end_date}"
