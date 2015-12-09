@@ -10,7 +10,8 @@
 
 module.exports = (robot) ->
   
-  pivotal_api_key = '46682d4fd542be3a3951cf5679394888'
+  pivotal_api_key = process.env.PIVOTAL_API_KEY
+  github_access_token = process.env.GITHUB_ACCESS_TOKEN
 
   getIterationData = (project_id, scope, res, callback) ->
     url = "https://www.pivotaltracker.com/services/v5/projects/#{project_id}/iterations?scope=#{scope}"
@@ -388,7 +389,7 @@ module.exports = (robot) ->
   # Github Requests
   
   getGituhbIssues = (project, res, username = "") ->
-    url_string = "https://api.github.com/repos/rentpath/#{project}/issues?access_token=59f0041f390f38b1daec128dbd8f79155ae6c769"
+    url_string = "https://api.github.com/repos/rentpath/#{project}/issues?access_token=#{github_access_token}"
     url_string += "&assignee=#{username}" if !!username
     request = robot.http(url_string)
     request.get() (err, response, body) ->
@@ -446,6 +447,8 @@ module.exports = (robot) ->
   # mobile ---------
 
   robot.respond /minions status$/i, (res) ->
+    res.send "Pivotal token: #{pivotal_api_key}"
+    res.send "GH token: #{github_access_token}"
     res.send "Let me gather that info for you..."
     data = getIterationData "1158374", "current", res, (data) ->
       parseIterationDataAndPostMessage data, res

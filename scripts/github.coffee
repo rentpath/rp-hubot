@@ -10,8 +10,10 @@
 
 module.exports = (robot) ->
 
+  github_access_token = process.env.GITHUB_ACCESS_TOKEN
+
   getGituhbIssues = (username, project, res) ->
-    request = robot.http("https://api.github.com/repos/rentpath/#{project}/issues?access_token=59f0041f390f38b1daec128dbd8f79155ae6c769&assignee=#{username}")
+    request = robot.http("https://api.github.com/repos/rentpath/#{project}/issues?access_token=#{github_access_token}&assignee=#{username}")
     request.get() (err, response, body) ->
       try
         data = JSON.parse(body)
